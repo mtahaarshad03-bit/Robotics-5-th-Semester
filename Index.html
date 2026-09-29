@@ -487,7 +487,14 @@
 
         <form id="assignmentForm">
           <div class="grid">
-<div class="field">
+            <div class="field">
+              <label for="studentName">Student Name</label>
+              <input type="text" id="studentName" name="studentName"
+                     placeholder="Enter your full name"
+                     autocomplete="name" required>
+            </div>
+
+            <div class="field">
               <label for="email">Email Address</label>
               <input type="email" id="email" name="email"
                      placeholder="student@example.com"
@@ -497,21 +504,21 @@
             <div class="field full">
               <label for="rollNo">Roll Number</label>
               <select id="rollNo" name="rollNo" required>
-<option value="" disabled selected>-- Select Your Roll Number --</option>
-                <option value="SU72-BSROM-F24-001">SU72-BSROM-F24-001 — M.SHARJEEL</option>
-                <option value="SU72-BSROM-F24-002">SU72-BSROM-F24-002 — ANEES HAIDER</option>
-                <option value="SU72-BSROM-F24-003">SU72-BSROM-F24-003 — ABDULLAH</option>
-                <option value="SU72-BSROM-F24-004">SU72-BSROM-F24-004 — ADEEL NASIR</option>
-                <option value="SU72-BSROM-F24-005">SU72-BSROM-F24-005 — Atif jahanzaib</option>
-                <option value="SU72-BSROM-F24-006">SU72-BSROM-F24-006 — M.Shahzaib</option>
-                <option value="SU72-BSROM-F24-007">SU72-BSROM-F24-007 — M.Zairan</option>
-                <option value="SU72-BSROM-F24-008">SU72-BSROM-F24-008 — Shahwaiz Chattah</option>
-                <option value="SU72-BSROM-S25-001 (Spring)">SU72-BSROM-S25-001 (Spring) — Jareer Yaman</option>
-                <option value="SU72-BSROM-S25-002 (Spring)">SU72-BSROM-S25-002 (Spring) — M.Saad</option>
-                <option value="SU72-BSROM-S25-003 (Spring)">SU72-BSROM-S25-003 (Spring) — Hamna sharif</option>
-                <option value="SU72-BSROM-S25-005 (Spring)">SU72-BSROM-S25-005 (Spring) — Laiba Naseem</option>
-                <option value="SU72-BSROM-S25-006 (Spring)">SU72-BSROM-S25-006 (Spring) — M.Hamsa Sardar</option>
-                <option value="SU72-BSROM-S25-007 (Spring)">SU72-BSROM-S25-007 (Spring) — Huzaifa Faisal</option>
+                <option value="" disabled selected>-- Select Your Roll Number --</option>
+                <option value="SU72-BSROM-F24-001">SU72-BSROM-F24-001</option>
+                <option value="SU72-BSROM-F24-002">SU72-BSROM-F24-002</option>
+                <option value="SU72-BSROM-F24-003">SU72-BSROM-F24-003</option>
+                <option value="SU72-BSROM-F24-004">SU72-BSROM-F24-004</option>
+                <option value="SU72-BSROM-F24-005">SU72-BSROM-F24-005</option>
+                <option value="SU72-BSROM-F24-006">SU72-BSROM-F24-006</option>
+                <option value="SU72-BSROM-F24-007">SU72-BSROM-F24-007</option>
+                <option value="SU72-BSROM-F24-008">SU72-BSROM-F24-008</option>
+                <option value="SU72-BSROM-S25-001 (Spring)">SU72-BSROM-S25-001 (Spring)</option>
+                <option value="SU72-BSROM-S25-002 (Spring)">SU72-BSROM-S25-002 (Spring)</option>
+                <option value="SU72-BSROM-S25-003 (Spring)">SU72-BSROM-S25-003 (Spring)</option>
+                <option value="SU72-BSROM-S25-005 (Spring)">SU72-BSROM-S25-005 (Spring)</option>
+                <option value="SU72-BSROM-S25-006 (Spring)">SU72-BSROM-S25-006 (Spring)</option>
+                <option value="SU72-BSROM-S25-007 (Spring)">SU72-BSROM-S25-007 (Spring)</option>
               </select>
             </div>
 
@@ -608,7 +615,7 @@
   </main>
 
   <script>
-    const WEBHOOK_URL = "https://n8n.srv1592446.hstgr.cloud/webhook/3b33e924-7069-467d-8dee-c82ff13cfbc3";
+    const WEBHOOK_URL = "https://n8n.srv1592446.hstgr.cloud/webhook-test/3b33e924-7069-467d-8dee-c82ff13cfbc3";
 
     const btn = document.getElementById("btn");
     const status = document.getElementById("status-msg");
@@ -711,6 +718,7 @@
       status.className = "loading";
 
       const formData = new FormData();
+      formData.append("studentName", document.getElementById("studentName").value.trim());
       formData.append("rollNo", document.getElementById("rollNo").value);
       formData.append("email", document.getElementById("email").value.trim());
       formData.append("assignmentNo", document.getElementById("assignmentNo").value);
