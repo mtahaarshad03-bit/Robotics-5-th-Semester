@@ -487,7 +487,14 @@
 
         <form id="assignmentForm">
           <div class="grid">
-<div class="field">
+            <div class="field">
+              <label for="studentName">Student Name</label>
+              <input type="text" id="studentName" name="studentName"
+                     placeholder="Enter your full name"
+                     autocomplete="name" required>
+            </div>
+
+            <div class="field">
               <label for="email">Email Address</label>
               <input type="email" id="email" name="email"
                      placeholder="student@example.com"
@@ -497,7 +504,7 @@
             <div class="field full">
               <label for="rollNo">Roll Number</label>
               <select id="rollNo" name="rollNo" required>
-<option value="" disabled selected>-- Select Your Roll Number --</option>
+                <option value="" disabled selected>-- Select Your Roll Number --</option>
                 <option value="SU72-BSROM-F24-001">SU72-BSROM-F24-001 — M.SHARJEEL</option>
                 <option value="SU72-BSROM-F24-002">SU72-BSROM-F24-002 — ANEES HAIDER</option>
                 <option value="SU72-BSROM-F24-003">SU72-BSROM-F24-003 — ABDULLAH</option>
@@ -608,7 +615,7 @@
   </main>
 
   <script>
-    const WEBHOOK_URL = "https://n8n.srv1592446.hstgr.cloud/webhook/3b33e924-7069-467d-8dee-c82ff13cfbc3";
+    const WEBHOOK_URL = "https://n8n.srv1592446.hstgr.cloud/webhook/73df8436-4a63-4590-b553-72b89f142d4e";
 
     const btn = document.getElementById("btn");
     const status = document.getElementById("status-msg");
@@ -711,6 +718,7 @@
       status.className = "loading";
 
       const formData = new FormData();
+      formData.append("studentName", document.getElementById("studentName").value.trim());
       formData.append("rollNo", document.getElementById("rollNo").value);
       formData.append("email", document.getElementById("email").value.trim());
       formData.append("assignmentNo", document.getElementById("assignmentNo").value);
