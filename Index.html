@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07151a">
+  <title>BS Robotics | Web & App Development Assignment Portal</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    :root {
+      --bg: #061216;
+      --panel: rgba(13, 19, 38, .72);
+      --panel-2: rgba(18, 26, 49, .72);
+      --line: rgba(148, 163, 184, .17);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --cyan: #2dd4bf;
+      --blue: #0ea5e9;
+      --violet: #f59e0b;
+      --green: #34d399;
+      --red: #fb7185;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 8%, rgba(45,212,191,.18), transparent 27%),
+        radial-gradient(circle at 90% 18%, rgba(14,165,233,.17), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(245,158,11,.10), transparent 34%),
+        var(--bg);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .22;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
+    }
+
+    .robot-grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .12;
+      background:
+        linear-gradient(90deg, transparent 49.8%, rgba(45,212,191,.35) 50%, transparent 50.2%),
+        linear-gradient(0deg, transparent 49.8%, rgba(14,165,233,.28) 50%, transparent 50.2%);
+      background-size: 120px 120px;
+      mask-image: radial-gradient(circle at center, black, transparent 78%);
+    }
+
+    .robot-grid span {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #2dd4bf;
+      box-shadow: 0 0 15px #2dd4bf;
+    }
+
+    .robot-grid span:nth-child(1) { left: 18%; top: 20%; }
+    .robot-grid span:nth-child(2) { left: 78%; top: 30%; }
+    .robot-grid span:nth-child(3) { left: 32%; top: 72%; }
+    .robot-grid span:nth-child(4) { left: 88%; top: 76%; }
+    .robot-grid span:nth-child(5) { left: 54%; top: 14%; }
+
+    .orb {
+      position: fixed;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: .14;
+      pointer-events: none;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .orb.one { background: #2dd4bf; left: -90px; top: 35%; }
+    .orb.two { background: #0ea5e9; right: -100px; top: 8%; animation-delay: -3s; }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-25px) translateX(12px); }
+    }
+
+    .page {
+      width: min(1050px, calc(100% - 30px));
+      margin: 0 auto;
+      padding: 42px 0 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border: 1px solid rgba(34,211,238,.25);
+      background: rgba(34,211,238,.07);
+      color: #a5f3fc;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      box-shadow: 0 0 28px rgba(34,211,238,.07);
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--cyan);
+    }
+
+    h1 {
+      margin-top: 18px;
+      font-size: clamp(32px, 6vw, 58px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+      background: linear-gradient(90deg, #fff, #bff9ff 42%, #c4b5fd 78%, #fff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .title-accent {
+      background: linear-gradient(90deg, #2dd4bf, #38bdf8, #fbbf24);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub {
+      margin: 12px auto 0;
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .subject-line {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #cbd5e1;
+      font-weight: 700;
+    }
+
+    .subject-line span {
+      color: #67e8f9;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: linear-gradient(145deg, rgba(17,24,48,.82), rgba(8,13,28,.78));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 28px 80px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.035);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+
+    .form-card { padding: 28px; }
+    .info-card { padding: 24px; position: sticky; top: 20px; }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .card-head h2 {
+      font-size: 19px;
+      letter-spacing: -.02em;
+    }
+
+    .secure {
+      color: #86efac;
+      background: rgba(52,211,153,.08);
+      border: 1px solid rgba(52,211,153,.18);
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 17px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      margin: 0 0 8px 2px;
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .input-wrap { position: relative; }
+
+    input, select {
+      width: 100%;
+      height: 50px;
+      border: 1px solid rgba(148,163,184,.18);
+      outline: none;
+      border-radius: 13px;
+      padding: 0 15px;
+      color: #f8fafc;
+      background: rgba(2,6,23,.55);
+      transition: .22s ease;
+      font-size: 14px;
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      padding-right: 40px;
+      background-image:
+        linear-gradient(45deg, transparent 50%, #67e8f9 50%),
+        linear-gradient(135deg, #67e8f9 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) 21px,
+        calc(100% - 13px) 21px;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+
+    select option { background: #0b1224; color: #fff; }
+
+    input::placeholder { color: #64748b; }
+
+    input:focus, select:focus {
+      border-color: rgba(34,211,238,.65);
+      box-shadow: 0 0 0 4px rgba(34,211,238,.08), 0 0 28px rgba(34,211,238,.06);
+      background: rgba(5,12,30,.78);
+    }
+
+    .upload {
+      position: relative;
+      border: 1px dashed rgba(103,232,249,.3);
+      border-radius: 16px;
+      background: rgba(34,211,238,.035);
+      padding: 16px;
+      transition: .2s ease;
+    }
+
+    .upload:hover, .upload.dragover {
+      border-color: rgba(34,211,238,.75);
+      background: rgba(34,211,238,.065);
+      transform: translateY(-1px);
+    }
+
+    .upload input[type=file] {
+      height: auto;
+      border: 0;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      box-shadow: none;
+    }
+
+    .upload input[type=file]:focus {
+      box-shadow: none;
+      border: 0;
+    }
+
+    .file-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 9px;
+      color: #7dd3fc;
+      font-size: 12px;
+    }
+
+    .file-name {
+      margin-top: 8px;
+      color: #cbd5e1;
+      font-size: 12px;
+      word-break: break-all;
+      min-height: 16px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 54px;
+      margin-top: 21px;
+      border: 0;
+      border-radius: 14px;
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      cursor: pointer;
+      background: linear-gradient(100deg, #0891b2, #4f46e5, #9333ea);
+      background-size: 180% 100%;
+      box-shadow: 0 13px 35px rgba(79,70,229,.24);
+      transition: .25s ease;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      background-position: 100% 0;
+      box-shadow: 0 17px 40px rgba(79,70,229,.34);
+    }
+
+    .submit-btn:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+    }
+
+    #status-msg {
+      min-height: 22px;
+      margin-top: 15px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .success { color: #6ee7b7; }
+    .error { color: #fb7185; }
+    .loading { color: #67e8f9; }
+
+    .steps {
+      display: grid;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .step {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+    }
+
+    .step-no {
+      width: 31px;
+      height: 31px;
+      flex: 0 0 31px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #a5f3fc;
+      background: rgba(34,211,238,.08);
+      border: 1px solid rgba(34,211,238,.18);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .step strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .step p {
+      color: #7f8da6;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 22px 0;
+    }
+
+    .meta {
+      display: grid;
+      gap: 9px;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .meta-row b { color: #e2e8f0; text-align: right; }
+
+    .footer {
+      margin-top: 22px;
+      text-align: center;
+      color: #64748b;
+      font-size: 11px;
+    }
+
+    .pulse {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 10px rgba(52,211,153,.8);
+    }
+
+    @media (max-width: 820px) {
+      .layout { grid-template-columns: 1fr; }
+      .info-card { position: static; }
+    }
+
+    @media (max-width: 580px) {
+      .page { width: min(100% - 18px, 1050px); padding-top: 25px; }
+      .form-card, .info-card { padding: 20px; border-radius: 20px; }
+      .grid { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      h1 { font-size: 36px; }
+      .title-accent {
+      background: linear-gradient(90deg, #2dd4bf, #38bdf8, #fbbf24);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-sub { font-size: 13px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="robot-grid" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+
+  <main class="page">
+    <header class="hero">
+      <div class="badge"><span class="badge-dot"></span> BS ROBOTICS · 5th SEMESTER</div>
+      <h1>Web & App Development<br><span class="title-accent">Assignment Portal</span></h1>
+      <p class="hero-sub">
+        A dedicated submission portal for Web & App Development assignments.
+        Submit your project details and upload your compressed assignment file securely.
+      </p>
+      <div class="subject-line">Subject: <span>Web & App Development</span></div>
+    </header>
+
+    <section class="layout">
+      <div class="card form-card">
+        <div class="card-head">
+          <div>
+            <h2>Submit Your Assignment</h2>
+          </div>
+          <div class="secure">● SECURE SUBMISSION</div>
+        </div>
+
+        <form id="assignmentForm">
+          <div class="grid">
+<div class="field">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email"
+                     placeholder="student@example.com"
+                     autocomplete="email" required>
+            </div>
+
+            <div class="field full">
+              <label for="rollNo">Roll Number</label>
+              <select id="rollNo" name="rollNo" required>
+<option value="" disabled selected>-- Select Your Roll Number --</option>
+                <option value="SU72-BSROM-F24-001">SU72-BSROM-F24-001 — M.SHARJEEL</option>
+                <option value="SU72-BSROM-F24-002">SU72-BSROM-F24-002 — ANEES HAIDER</option>
+                <option value="SU72-BSROM-F24-003">SU72-BSROM-F24-003 — ABDULLAH</option>
+                <option value="SU72-BSROM-F24-004">SU72-BSROM-F24-004 — ADEEL NASIR</option>
+                <option value="SU72-BSROM-F24-005">SU72-BSROM-F24-005 — Atif jahanzaib</option>
+                <option value="SU72-BSROM-F24-006">SU72-BSROM-F24-006 — M.Shahzaib</option>
+                <option value="SU72-BSROM-F24-007">SU72-BSROM-F24-007 — M.Zairan</option>
+                <option value="SU72-BSROM-F24-008">SU72-BSROM-F24-008 — Shahwaiz Chattah</option>
+                <option value="SU72-BSROM-S25-001 (Spring)">SU72-BSROM-S25-001 (Spring) — Jareer Yaman</option>
+                <option value="SU72-BSROM-S25-002 (Spring)">SU72-BSROM-S25-002 (Spring) — M.Saad</option>
+                <option value="SU72-BSROM-S25-003 (Spring)">SU72-BSROM-S25-003 (Spring) — Hamna sharif</option>
+                <option value="SU72-BSROM-S25-005 (Spring)">SU72-BSROM-S25-005 (Spring) — Laiba Naseem</option>
+                <option value="SU72-BSROM-S25-006 (Spring)">SU72-BSROM-S25-006 (Spring) — M.Hamsa Sardar</option>
+                <option value="SU72-BSROM-S25-007 (Spring)">SU72-BSROM-S25-007 (Spring) — Huzaifa Faisal</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="assignmentNo">Assignment</label>
+              <select id="assignmentNo" name="assignmentNo" required>
+                <option value="" disabled selected>-- Select Assignment --</option>
+                <option value="1">Assignment 1</option>
+                <option value="2">Assignment 2</option>
+                <option value="3">Assignment 3</option>
+                <option value="4">Assignment 4</option>
+                <option value="5">Assignment 5</option>
+                <option value="6">Assignment 6</option>
+                <option value="7">Assignment 7</option>
+                <option value="8">Assignment 8</option>
+                <option value="9">Assignment 9</option>
+                <option value="10">Assignment 10</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="zipFile">Assignment File</label>
+              <div class="upload" id="uploadBox">
+                <input type="file" id="zipFile" name="data"
+                       accept=".zip,.rar,.7z,application/zip,application/x-zip-compressed"
+                       required>
+                <div class="file-note">📦 ZIP, RAR or 7Z files are accepted</div>
+                <div class="file-name" id="fileName">No file selected</div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" id="btn">
+            Submit Assignment →
+          </button>
+
+          <div id="status-msg" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <aside class="card info-card">
+        <div class="card-head">
+          <h2>Submission Guide</h2>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-no">01</div>
+            <div>
+              <strong>Enter your details</strong>
+              <p>Provide your name, email and correct university roll number.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-no">02</div>
+            <div>
+              <strong>Select assignment</strong>
+              <p>Choose the Web & App Development assignment number you are submitting.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-no">03</div>
+            <div>
+              <strong>Upload project</strong>
+              <p>Compress your Web & App Development project and upload it as ZIP, RAR or 7Z.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-no">04</div>
+            <div>
+              <strong>Submit</strong>
+              <p>Click submit and wait for the confirmation message.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="meta">
+          <div class="meta-row"><span>Program</span><b>BS Robotics</b></div>
+          <div class="meta-row"><span>Semester</span><b>5th Semester</b></div>
+          <div class="meta-row"><span>Subject</span><b>Web & App Development</b></div>
+          <div class="meta-row"><span>Portal</span><b>Assignment Submission</b></div>
+        </div>
+
+        <div class="footer">
+          <span class="pulse"></span> Submission system is ready
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const WEBHOOK_URL = "https://n8n.srv1592446.hstgr.cloud/webhook/3b33e924-7069-467d-8dee-c82ff13cfbc3";
+
+    const btn = document.getElementById("btn");
+    const status = document.getElementById("status-msg");
+    const form = document.getElementById("assignmentForm");
+    const fileInput = document.getElementById("zipFile");
+    const fileName = document.getElementById("fileName");
+    const uploadBox = document.getElementById("uploadBox");
+
+    function validateFile(file) {
+      if (!file) return false;
+
+      const fileNameLower = file.name.toLowerCase();
+      const allowedExtensions = [".zip", ".rar", ".7z"];
+      return allowedExtensions.some(ext => fileNameLower.endsWith(ext));
+    }
+
+    function showError(message) {
+      status.innerText = message;
+      status.className = "error";
+    }
+
+    fileInput.addEventListener("change", function () {
+      const file = fileInput.files[0];
+      if (!file) {
+        fileName.innerText = "No file selected";
+        return;
+      }
+
+      if (!validateFile(file)) {
+        showError("❌ Please upload a ZIP, RAR, or 7Z file.");
+        fileInput.value = "";
+        fileName.innerText = "No file selected";
+        return;
+      }
+
+      status.innerText = "";
+      status.className = "";
+      fileName.innerText = "Selected: " + file.name;
+    });
+
+    ["dragenter", "dragover"].forEach(eventName => {
+      uploadBox.addEventListener(eventName, e => {
+        e.preventDefault();
+        uploadBox.classList.add("dragover");
+      });
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      uploadBox.addEventListener(eventName, e => {
+        e.preventDefault();
+        uploadBox.classList.remove("dragover");
+      });
+    });
+
+    uploadBox.addEventListener("drop", e => {
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+
+      try {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+      } catch (err) {
+        // Browser does not allow programmatic file assignment.
+      }
+
+      if (!validateFile(file)) {
+        showError("❌ Please upload a ZIP, RAR, or 7Z file.");
+        fileInput.value = "";
+        fileName.innerText = "No file selected";
+        return;
+      }
+
+      status.innerText = "";
+      status.className = "";
+      fileName.innerText = "Selected: " + file.name;
+    });
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      status.innerText = "";
+      status.className = "";
+
+      const file = fileInput.files[0];
+
+      if (!file) {
+        showError("❌ Please select your assignment file.");
+        return;
+      }
+
+      if (!validateFile(file)) {
+        showError("❌ Please upload a ZIP, RAR, or 7Z file.");
+        return;
+      }
+
+      btn.innerText = "Uploading... Please wait";
+      btn.disabled = true;
+      status.innerText = "⏳ Uploading assignment...";
+      status.className = "loading";
+
+      const formData = new FormData();
+      formData.append("rollNo", document.getElementById("rollNo").value);
+      formData.append("email", document.getElementById("email").value.trim());
+      formData.append("assignmentNo", document.getElementById("assignmentNo").value);
+      formData.append("data", file);
+
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        status.innerText = "✨ Assignment submitted successfully!";
+        status.className = "success";
+        form.reset();
+        fileName.innerText = "No file selected";
+        btn.innerText = "Submitted ✓";
+
+        setTimeout(() => {
+          btn.innerText = "Submit Assignment →";
+          btn.disabled = false;
+        }, 2000);
+
+      } catch (err) {
+        console.error("Assignment submission error:", err);
+        showError("❌ Assignment submission failed. Please try again.");
+        btn.innerText = "Try Again";
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
